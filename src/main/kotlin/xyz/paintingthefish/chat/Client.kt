@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
  */
 @Suppress("unused")
 object Client {
-    var main_cfg: Wini? = null
+    var mainCfg: Wini? = null
     var window: JFrame? = null
 
     fun initWindow() {
@@ -59,17 +59,9 @@ object Client {
         System.out.printf("ЧAT™ v${Shared.getVersion()}\nproduct of To Paint The Fish Studios™\n%s\n", os)
 
         if (os.contains("nux")) {
-            main_cfg =
+            mainCfg =
                 Shared.getIniFromFpath(Paths.get(System.getProperty("user.home") + "/.ЧAT/client/config.ini"))
         }
         initWindow()
-
-        /*if (main_cfg.get("data", "provider") == null) {
-            System.out.println("[INFO] user config missing 'provider' key, initiating setup");
-            System.out.println(main_cfg.get("data", "provider"));
-            for (Component component : window.getComponents()) {
-                window.remove(component);
-            }
-        }*/
     }
 }

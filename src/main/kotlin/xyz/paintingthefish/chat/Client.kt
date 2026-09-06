@@ -6,7 +6,11 @@ import java.awt.BorderLayout
 import java.awt.Font
 import java.awt.Toolkit
 import java.awt.image.BufferedImage
+import java.io.File
 import java.io.IOException
+import java.io.InputStream
+import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import javax.imageio.ImageIO
@@ -25,13 +29,39 @@ import kotlin.math.roundToInt
 object Client {
     var mainCfg: Wini? = null
     var window: JFrame? = null
+    var dataDirectory: Path? = null
+
+    fun cacheFont(fontInputStream: InputStream?, targetDir: Path) {
+        if (fontInputStream == null) throw IllegalArgumentException("fontInputStream is null")
+        Font.createFont(Font.TRUETYPE_FONT, fontInputStream)
+    }
+
+    fun getFontFromInputStream(fontInputStream: InputStream?, fallback: Font): Font {
+        if (fontInputStream == null) {
+            System.err.println("[ERR] fontInputStream is invalid. using fallback")
+            return fallback
+        }
+        return Font.createFont(Font.TRUETYPE_FONT, fontInputStream)
+    }
+
+    fun getFontFromInputStream(fontInputStream: InputStream?): Font {
+        if (fontInputStream == null) {
+            System.err.println("[ERR] fontInputStream is invalid. no fallback provided.")
+            throw IllegalArgumentException("fontInputStream is null")
+        }
+        return Font.createFont(Font.TRUETYPE_FONT, fontInputStream)
+    }
+
+    fun firstTimeInit() {
+
+    }
 
     fun initWindow() {
         val screenSize = Toolkit.getDefaultToolkit().screenSize
         window = JFrame("ЧAT™ v${Shared.getVersion()}")
         val icon: BufferedImage?
         try {
-            val imgStream = Client::class.java.getResourceAsStream("/xyz/paintingthefish/chat/images/icon.png")
+            val imgStream: InputStream? = Client::class.java.getResourceAsStream("/xyz/paintingthefish/chat/images/icon.png")
             if (imgStream == null) {
                 System.err.println("[ERROR] COULD NOT LOAD `icon.png`")
             } else {
@@ -57,10 +87,12 @@ object Client {
     fun main(args: Array<String>) {
         val os = System.getProperty("os.name").lowercase(Locale.getDefault())
         System.out.printf("ЧAT™ v${Shared.getVersion()}\nproduct of To Paint The Fish Studios™\n%s\n", os)
-
+        dataDirectory = Paths.get(System.getProperty("user.home") + "/.ЧAT/")
         if (os.contains("nux")) {
-            mainCfg =
-                Shared.getIniFromFpath(Paths.get(System.getProperty("user.home") + "/.ЧAT/client/config.ini"))
+            mainCfg = Shared.getIniFromFpath(Paths.get(dataDirectory!!.toString(), "client/config.ini"))
+        }
+        if (!Files.exists(dataDirectory!!)) {
+
         }
         initWindow()
     }

@@ -25,6 +25,17 @@ class Shared {
 
     companion object {
         const val DEFAULT_PORT: Int = 1997
+
+        fun getBitFrom64Bitflag(bitflag: Long, position: Int): Int {
+            // 1. Shift the 64-bit flag right by the target position
+            // 2. Mask it with 1L to isolate that specific bit
+            val extracted = (bitflag shr position) and 1L
+
+
+            // Cast the final 0 or 1 result back to a standard integer
+            return extracted.toInt()
+        }
+
         fun getVersion(): String {
             return Shared::class.java.`package`.implementationVersion ?: "???"
         }

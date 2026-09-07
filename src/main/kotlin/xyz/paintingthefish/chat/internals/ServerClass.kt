@@ -12,20 +12,15 @@ import kotlin.math.round
 class ServerClass(conf: Wini) :
     WebSocketServer(InetSocketAddress("::", Shared.DEFAULT_PORT)) {
     var recentMessagesBuffer: RecentMessagesBuffer? = RecentMessagesBuffer(conf.get("info", "amount").toInt())
-    var cfg: Wini? = conf
+    var cfg: Wini = conf
     val base64Decoder: Base64.Decoder = Base64.getDecoder()
     val base64Encoder: Base64.Encoder = Base64.getEncoder()
     val base64SizeOverhead: Float = (4.0f / 3.0f)
 
-    // originally planned for all of these to be shorts we converted but like its chill
-    /*
-    *
-    * @T
-    */
-    val ok: ByteArray = byteArrayOf(0x00, 0x00)
-    val tooShort: ByteArray = byteArrayOf(0x00, 0x0A)
-    val tooLong: ByteArray = byteArrayOf(0x00, 0x0B)
-    val parsingError: ByteArray = byteArrayOf(0x00, 0x0C)
+    val ok: Byte = 0x00
+    val tooShort: Byte = 0x0A
+    val tooLong: Byte = 0x0B
+    val parsingError: Byte = 0x0C
 
     override fun onStart() {
         System.err.println("ЧAT server starting on port " + getPort().toString())
@@ -47,10 +42,10 @@ class ServerClass(conf: Wini) :
 
     override fun onMessage(conn: WebSocket, message: String) {
         if (round(message.length / base64SizeOverhead) <= 1) {
-            conn.send(base64Encoder.encode(tooShort))
+            conn.send(base64Encoder.encode(byteArrayOf(tooShort)))
             return
         } else if (round(message.length / base64SizeOverhead) >= 1048576) {
-            conn.send(base64Encoder.encode(tooLong))
+            conn.send(base64Encoder.encode(byteArrayOf(tooLong)))
             return
         }
         try {
@@ -58,7 +53,7 @@ class ServerClass(conf: Wini) :
             val userData = Wini(conn.getAttachment<String>().reader())
         } catch (e: Exception) {
             e.printStackTrace()
-            conn.send(base64Encoder.encode(parsingError))
+            conn.send(base64Encoder.encode(byteArrayOf(parsingError)))
             return
         }
         TODO("basically everything else")

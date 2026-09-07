@@ -31,13 +31,13 @@ object Server {
         }
 
 
-        if ((!File(System.getProperty("user.home") + "/.ЧAT/server/config.ini").exists()) || Shared.hasFlag(
+        if ((!File(System.getProperty("user.home") + "/.чат/server/config.ini").exists()) || Shared.hasFlag(
                 args,
                 "--setup"
             )
         ) {
             val cfg: Wini =
-                Shared.getIniFromFpath(System.getProperty("user.home") + "/.ЧAT/server/config.ini")
+                Shared.getIniFromFpath(System.getProperty("user.home") + "/.чат/server/config.ini")
             println("Welcome to the ЧAT provider setup wizard!")
             var defaultValue: Any = Objects.requireNonNullElse(cfg.get("info", "name"), "ЧATProvider")
             System.out.printf(
@@ -52,13 +52,13 @@ object Server {
             )
             defaultValue = Objects.requireNonNullElse(
                 cfg.get("info", "name"),
-                System.getProperty("user.home") + "/.ЧAT/server/conf.db"
+                System.getProperty("user.home") + "/.чат/server/conf.db"
             )
             System.out.printf(
                 "Where would you like to put the SQLite database containing info? (%s)\n>> ",
                 Objects.requireNonNullElse(
                     cfg.get("info", "port"),
-                    System.getProperty("user.home") + "/.ЧAT/server/conf.db"
+                    System.getProperty("user.home") + "/.чат/server/conf.db"
                 )
             )
             nl = input.nextLine()

@@ -87,7 +87,7 @@ object Client {
     fun main(args: Array<String>) {
         val os = System.getProperty("os.name").lowercase(Locale.getDefault())
         System.out.printf("ЧAT™ v${Shared.getVersion()}\nproduct of To Paint The Fish Studios™\n%s\n", os)
-        dataDirectory = Paths.get(System.getProperty("user.home") + "/.ЧAT/")
+        dataDirectory = Paths.get(System.getProperty("user.home") + "/.чат/client")
         if (os.contains("nux")) {
             mainCfg = Shared.getIniFromFpath(Paths.get(dataDirectory!!.toString(), "client/config.ini"))
         }
